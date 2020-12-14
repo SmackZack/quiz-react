@@ -26,13 +26,10 @@ class Play extends Component {
             score: 0,
             correctAnswers: 0,
             wrongAnswers: 0,
-            hints: 5,
-            fiftyFifty: 2,
             usedFiftyFifty: false,
             nextButtonDisabled: false,
             previousButtonDisabled: true,
             previousRandomNumbers: [],
-            time: {}
         };
         this.interval = null;
         this.correctSound = React.createRef();

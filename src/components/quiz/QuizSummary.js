@@ -12,7 +12,6 @@ class QuizSummary extends Component {
             correctAnswers: 0,
             wrongAnswers: 0,
             hintsUsed: 0,
-            fiftyFiftyUsed: 0
         };
     }
 
@@ -25,8 +24,6 @@ class QuizSummary extends Component {
                 numberOfAnsweredQuestions: state.numberOfAnsweredQuestions,
                 correctAnswers: state.correctAnswers,
                 wrongAnswers: state.wrongAnswers,
-                hintsUsed: state.hintsUsed,
-                fiftyFiftyUsed: state.fiftyFiftyUsed
             });
         }
     }
@@ -70,11 +67,9 @@ class QuizSummary extends Component {
                         <span className="stat left">Number of Wrong Answers: </span>
                         <span className="right">{this.state.wrongAnswers}</span><br />
 
-                        <span className="stat left">Hints Used: </span>
-                        <span className="right">{this.state.hintsUsed}</span><br />
+        
 
-                        <span className="stat left">50-50 Used: </span>
-                        <span className="right">{this.state.fiftyFiftyUsed}</span>
+                    
                     </div>
                     <section>
                         <ul>

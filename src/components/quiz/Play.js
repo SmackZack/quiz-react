@@ -26,7 +26,6 @@ class Play extends Component {
             score: 0,
             correctAnswers: 0,
             wrongAnswers: 0,
-            usedFiftyFifty: false,
             nextButtonDisabled: false,
             previousButtonDisabled: true,
             previousRandomNumbers: [],
@@ -40,7 +39,6 @@ class Play extends Component {
     componentDidMount () {
         const { questions, currentQuestion, nextQuestion, previousQuestion } = this.state;
         this.displayQuestions(questions, currentQuestion, nextQuestion, previousQuestion);
-        this.startTimer();
        
     }
 
@@ -185,116 +183,9 @@ class Play extends Component {
         options.forEach(option => {
             option.style.visibility = 'visible';
         });
-
-        this.setState({
-            usedFiftyFifty: false
-        });
     }
 
-    handleHints = () => {
-        if (this.state.hints > 0) {
-            const options = Array.from(document.querySelectorAll('.option'));
-            let indexOfAnswer;
 
-            options.forEach((option, index) => {
-                if (option.innerHTML.toLowerCase() === this.state.answer.toLowerCase()) {
-                    indexOfAnswer = index;
-                }
-            });
-
-            while (true) {
-                const randomNumber = Math.round(Math.random() * 3);
-                if (randomNumber !== indexOfAnswer && !this.state.previousRandomNumbers.includes(randomNumber)) {
-                    options.forEach((option, index) => {
-                        if (index === randomNumber) {
-                            option.style.visibility = 'hidden';
-                            this.setState((prevState) => ({
-                                hints: prevState.hints - 1,
-                                previousRandomNumbers: prevState.previousRandomNumbers.concat(randomNumber)
-                            }));
-                        }
-                    });
-                    break;
-                }
-                if (this.state.previousRandomNumbers.length >= 3) break;
-            }
-        }
-    }
-
-    handleFiftyFifty = () => {
-        if (this.state.fiftyFifty > 0 && this.state.usedFiftyFifty === false) {
-            const options = document.querySelectorAll('.option');
-            const randomNumbers = [];
-            let indexOfAnswer;
-
-            options.forEach((option, index) => {
-                if (option.innerHTML.toLowerCase() === this.state.answer.toLowerCase()) {
-                    indexOfAnswer = index;
-                }
-            });
-
-            let count = 0;
-            do {
-                const randomNumber = Math.round(Math.random() * 3);
-                if (randomNumber !== indexOfAnswer) {
-                    if (randomNumbers.length < 2 && !randomNumbers.includes(randomNumber) && !randomNumbers.includes(indexOfAnswer)) {
-                            randomNumbers.push(randomNumber);
-                            count ++;
-                    } else {
-                        while (true) {
-                            const newRandomNumber = Math.round(Math.random() * 3);
-                            if (!randomNumbers.includes(newRandomNumber) && newRandomNumber !== indexOfAnswer) {
-                                randomNumbers.push(newRandomNumber);
-                                count ++;
-                                break;
-                            }
-                        }
-                    }
-                }
-            } while (count < 2);
-
-            options.forEach((option, index) => {
-                if (randomNumbers.includes(index)) {
-                    option.style.visibility = 'hidden';
-                }
-            });
-            this.setState(prevState => ({
-                fiftyFifty: prevState.fiftyFifty - 1,
-                usedFiftyFifty: true
-            }));
-        }
-    }
-
-    startTimer = () => {
-        const countDownTime = Date.now() + 1800043843923084394839483290849032;
-        this.interval = setInterval(() => {
-            const now = new Date();
-            const distance = countDownTime - now;
-
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-            if (distance < 0) {
-                clearInterval(this.interval);
-                this.setState({
-                    time: {
-                        minutes: 0,
-                        seconds: 0
-                    }
-                }, () => {
-                    this.endGame();
-                });
-            } else {
-                this.setState({
-                    time: {
-                        minutes,
-                        seconds,
-                        distance
-                    }
-                });
-            }
-        }, 1000);
-    }
 
     handleDisableButton = () => {
         if (this.state.previousQuestion === undefined || this.state.currentQuestionIndex === 0) {
@@ -327,8 +218,6 @@ class Play extends Component {
             numberOfAnsweredQuestions: state.correctAnswers + state.wrongAnswers,
             correctAnswers: state.correctAnswers,
             wrongAnswers: state.wrongAnswers,
-            fiftyFiftyUsed: 2 - state.fiftyFifty,
-            hintsUsed: 5 - state.hints
         };
         setTimeout(() => {
             this.props.history.push('/play/quizSummary', playerStats);
@@ -339,10 +228,7 @@ class Play extends Component {
         const { 
             currentQuestion, 
             currentQuestionIndex, 
-            fiftyFifty, 
-            hints, 
             numberOfQuestions,
-            time 
         } = this.state;
 
         return (
